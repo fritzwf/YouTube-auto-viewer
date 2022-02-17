@@ -14,60 +14,11 @@
  <link rel="stylesheet" type="text/css" href="//feuersoft.com/feuersoft.css" />
  <script src="//feuersoft.com/jscript/jquery-3.6.0.js"></script>
  <link rel='shortcut icon' href='//feuersoft.com/favicon.ico' type='image/x-icon'/>
- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3352789819896964"
-    crossorigin="anonymous"></script>
 </HEAD>
 
 <BODY>
 
-  <script>
-    function isMobileDevice() {
-      return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
-    };
-
-    $(document).ready(function() {
-      if (isMobileDevice()) {
-        $('#mobileBrowserContent').show();
-      }
-      else {
-        $('#fullBrowserContent').show();      
-        $('#fullBrowserContent2').show();
-      }
-    });
-  </script>
-  
   <center><H1> YouTube Auto Viewer </H1></center>
-  
-  <!-- Note: the H3 title needs to be within the div because the verticle ad causes and issue. -->
-  <div id="fullBrowserContent" hidden>
-    <TABLE class="center">
-      <tr>
-        <td>
-          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-          <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px"
-          data-ad-client="ca-pub-3352789819896964" data-ad-slot="1520668958"></ins>
-          <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>         
-        </td>
-      </tr>
-    </TABLE>
-  </div>
-
-  <div id="mobileBrowserContent" hidden>
-    <TABLE class="center">
-      <tr>
-        <td>
-          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-          <ins class="adsbygoogle"
-                style="display:inline-block;width:230px;height:120px"
-                data-ad-client="ca-pub-3352789819896964"
-                data-ad-slot="9746586835"></ins>
-          <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
-        </td>
-      </tr>
-    </TABLE>   
-  </div>
   
   <table class="center">
 
@@ -128,7 +79,7 @@
           
               var dummyVid = "https://www.youtube.com/embed/Srmdij0CU1U";
               var dummyVidTime = 10000;
-              var ytApiKey = "AIzaSyA6DN7V0WsjSWmoOFubC6V3RoN3rvp7-iI";
+              var ytApiKey = "ENTER YOUR YOUTUBE API KEY HERE";
 
               // This makes each iframe unique.  Not sure if this is necessary
               // but the idea is that some browsers will cache the iframe and
@@ -384,36 +335,5 @@
   </table>
   <!-- Note: the H3 title needs to be within the div because the verticle ad causes and issue. -->
 
-  <div id="fullBrowserContent2" hidden>
-    <TABLE class="center">
-      <tr>
-        <td>
-          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-          <ins class="adsbygoogle"
-                style="display:inline-block;width:230px;height:120px"
-                data-ad-client="ca-pub-3352789819896964"
-                data-ad-slot="9746586835"></ins>
-          <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
-        </td>
-      </tr>
-    </TABLE>   
-  </div>
-
-  <div hidden>
-    <a>
-      <img src="//counter.digits.net/?counter={18ee4ae3-87a0-2944-d5f2-5b11d020cf79}&template=simple" border="0" />
-    </a>
-  </div>
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-96531677-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-96531677-1');
-  </script>
 </BODY>
 </HTML>
