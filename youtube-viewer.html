@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<HTML lang="en-US">
+<HEAD>
+<TITLE>Auto Viewer</TITLE>
+ <meta http-Equiv="Cache-Control" Content="no-cache" />
+ <meta http-Equiv="Pragma" Content="no-cache" />
+ <meta http-equiv="Expires" content="-1">
+ <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+ <meta name="robots" content="index, follow" />
+ <meta name="googlebot" content="index, follow" />   
+ <META name="description" content="YouTube Auto Viewer">
+ <META name="keywords" content="YouTube, Viewer, Auto, Auto Viewer, YouTube Auto Viewer"> 
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <link rel="stylesheet" type="text/css" href="//feuersoft.com/feuersoft.css" />
+ <script src="//feuersoft.com/jscript/jquery-3.6.0.js"></script>
+ <link rel='shortcut icon' href='//feuersoft.com/favicon.ico' type='image/x-icon'/>
+ <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3352789819896964"
+    crossorigin="anonymous"></script>
+</HEAD>
+
+<BODY>
+
+  <script>
+    function isMobileDevice() {
+      return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    };
+
+    $(document).ready(function() {
+      if (isMobileDevice()) {
+        $('#mobileBrowserContent').show();
+      }
+      else {
+        $('#fullBrowserContent').show();      
+        $('#fullBrowserContent2').show();
+      }
+    });
+  </script>
+  
+  <center><H1> YouTube Auto Viewer </H1></center>
+  
+  <!-- Note: the H3 title needs to be within the div because the verticle ad causes and issue. -->
+  <div id="fullBrowserContent" hidden>
+    <TABLE class="center">
+      <tr>
+        <td>
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px"
+          data-ad-client="ca-pub-3352789819896964" data-ad-slot="1520668958"></ins>
+          <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>         
+        </td>
+      </tr>
+    </TABLE>
+  </div>
+
+  <div id="mobileBrowserContent" hidden>
+    <TABLE class="center">
+      <tr>
+        <td>
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <ins class="adsbygoogle"
+                style="display:inline-block;width:230px;height:120px"
+                data-ad-client="ca-pub-3352789819896964"
+                data-ad-slot="9746586835"></ins>
+          <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </td>
+      </tr>
+    </TABLE>   
+  </div>
+  
+  <table class="center">
+
+    <tr>
+      <td>
+
+         <p id="msg"></p>
+         
+           <p>
+             <legend>Enter YouTube video Id (E.g. Srmdij0CU1U):</legend>  
+             <input id="vidURL" size="70" type="text" value="">
+           </p>
+           
+           <p>
+           <legend>Enter time between views: <input id="sleepTime" type="number" name="sleepMins" min="5" max="300" value="20" > seconds</legend>
+           </p>
+           
+           <p>
+           <legend>Enter time to run video: <input id="runTime" type="number" name="runTime" min="35" max="120" value="40" > seconds</legend>
+           </p>
+
+           <p>
+            <center>
+              <button class="button" id="startButton" onclick="startViewing()">Start Views</button>
+              
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+              <span hidden>
+                <button class="button" id="stopButton" onclick="stopViews()">Stop Views</button>
+              </span>
+            </center>
+
+           </p>
+           
+           <center><p id="countViews"></p></center>
+           
+          <script>
+          
+              function intervalTimer(duration, display, caption) {
+                var timer = duration, minutes, seconds;
+
+                return setInterval(function () {
+                
+                  if (timer > 0) {
+                    minutes = parseInt(timer / 60, 10)
+                    seconds = parseInt(timer % 60, 10);
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    if (display) {
+                      display.textContent = (caption || "") + minutes + ":" + seconds;
+                    }
+                    timer--;
+                  }
+                }, 1000);
+              };              
+          
+              var dummyVid = "https://www.youtube.com/embed/Srmdij0CU1U";
+              var dummyVidTime = 10000;
+              var ytApiKey = "AIzaSyA6DN7V0WsjSWmoOFubC6V3RoN3rvp7-iI";
+
+              // This makes each iframe unique.  Not sure if this is necessary
+              // but the idea is that some browsers will cache the iframe and
+              // re-use it and the cached video?
+              var iframeId = 1;                    
+                            
+              function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+              };
+              
+              var iframeHolder = null;
+              var run_time = document.getElementById("runTime").value;
+              var reelTitle = 'Your video will run in a few seconds...';
+
+              async function startViewing() {
+              
+                var video_url = document.getElementById("vidURL").value;
+                document.getElementById("stopButton").disabled = !stopViewing;
+                
+                if (!video_url) {
+                  alert("You must provide an embedded YouTube video URL!");
+                }
+                else
+                {
+                  document.getElementById("videoTitle").innerHTML = "";
+                  document.getElementById("startButton").style.display = "none";               
+                
+                  // This can be used to terminate the while loop.
+                  var stopViewing = false;                  
+                  // Get the video title so we can display it.
+                  // var video_id = document.getElementById("vidURL").value.split("embed/")[1];
+
+                  var video_url_id = document.getElementById("vidURL").value;
+                  
+                  var video_url = "https://www.youtube.com/embed/" + video_url_id;
+
+                  var videoTitle = "";
+
+                  $.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + video_url_id + "&key=" + ytApiKey, function(data) {
+                    videoTitle = data.items[0].snippet.title;
+                  });
+                  
+                  // var video_url = document.getElementById("vidURL").value;
+                  var sleep_time = document.getElementById("sleepTime").value;
+                                    
+                  // normalize sleep time.
+                  sleep_time = sleep_time < 5 ? 5 : sleep_time;
+                  sleep_time = sleep_time > 300 ? 300 : sleep_time;
+                  
+                  // normalize run time.
+                  run_time = run_time < 1 ? 10 : run_time;
+                  run_time = run_time > 60 ? 60 : run_time;
+
+                  document.getElementById("startButton").disabled = !stopViewing;
+                  document.getElementById("sleepTime").disabled = !stopViewing;
+                  document.getElementById("vidURL").disabled = !stopViewing;
+                  document.getElementById("stopButton").disabled = !stopViewing;
+                  document.getElementById("runTime").disabled = !stopViewing;                
+
+                  var viewCount = 0;
+                  var timerDisplay = document.querySelector("#waitTime");
+                  var playCount = 0;
+
+                  do {
+                      
+                    document.getElementById("waitWork").style.display = "none";
+                    //document.getElementById("iframe1").src = video_url;
+                    //document.getElementById("countViews").innerHTML = "";
+                    document.getElementById("waitTime").innerHTML = "";
+                    
+                    if (playCount % 2 === 0) {
+                      // Play the real video!
+                      document.getElementById("videoTitle").innerHTML = reelTitle;
+                      startYouTubePlayer(dummyVid, false);
+                    }
+                    else {
+                      // Play the real video!
+                      document.getElementById("videoTitle").innerHTML = videoTitle;
+                      startYouTubePlayer(video_url, false);
+                      viewCount++;
+                    }
+
+                     // Let the video play for x seconds.
+                    var runTotal = (playCount % 2 === 0) ? dummyVidTime : 1000 * run_time;
+                    await sleep(runTotal);
+
+                    //stopYouTubePlayer();
+                    document.getElementById("countViews").innerHTML = "Total views: " + viewCount;
+                    
+                    // var sleepTotal = (playCount % 2 == 0) ? 0 : 1000 * 60 * sleep_time;
+                    
+                    // document.getElementById("waitTime").innerHTML = "Waiting " + sleep_time + " minutes before next view...";
+                    // //document.getElementById("waitWork").style.display = "block";
+
+                    // var intTimer = intervalTimer((playCount % 2 == 0) ? 0 : sleep_time * 60, timerDisplay, "Next view in: ");
+                    // // Production Sleep minutes.
+                    // await sleep(sleepTotal);
+
+                    // // Get rid of the interval countdown display.
+                    // clearInterval(intTimer);
+
+                    var sleepTotal = (playCount % 2 === 0) ? 0 : 1000 * sleep_time;
+                    
+                    document.getElementById("waitTime").innerHTML = "Waiting " + sleep_time + " seconds before next view...";
+
+                    var intTimer = intervalTimer((playCount % 2 === 0) ? 0 : sleep_time, timerDisplay, "Next view in: ");
+                    // Production Sleep minutes.
+                    await sleep(sleepTotal);
+
+                    // Get rid of the interval countdown display.
+                    clearInterval(intTimer);
+                    playCount++;
+
+                  } while (!stopViewing);
+                }
+              }
+
+              async function stopViews() {
+                stopViewing = true;
+                document.getElementById("msg").innerHTML = "Stopped viewing.";
+                document.getElementById("stopButton").disabled = !stopViewing;
+                document.getElementById("sleepTime").disabled = !stopViewing;
+                document.getElementById("runTime").disabled = !stopViewing;
+                document.getElementById("waitWork").style.display = "none";
+                document.getElementById("startButton").disabled = !stopViewing;
+              };
+
+            //   async function startYouTubePlayer(video_url) {
+              
+            //   if (video_url) {
+            //       iframeId++;
+            //       var iframe = document.createElement("iframe");
+            //       iframe.setAttribute("id", "vidPlayer" + iframeId);
+            //       iframe.setAttribute("name", "vidPlayer" + iframeId);
+            //       iframe.setAttribute("width", "560");
+            //       iframe.setAttribute("height", "315");
+            //       iframe.setAttribute("allow", "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
+                  
+            //       document.body.appendChild(iframe);
+            //       var el = document.getElementById("vidPlaying");
+                  
+            //       el.parentNode.insertBefore(iframe, el);
+            //       //reload(el);
+            //       // assign url
+            //       //iframe.setAttribute('src', video_url);
+            //       document.getElementById("vidPlayer" + iframeId).contentWindow.location.reload(true);
+            //       iframe.setAttribute('src', video_url + '?title=' + iframeId);
+            //   }
+            // };              
+              var getDateSystemId = function() {
+                var sysDate = new Date();
+                var sysString = sysDate.getMilliseconds;
+                var randomNum = Math.floor(Math.random() * 100000000);
+
+                sysString = randomNum +
+                            sysDate.getFullYear() +
+                            sysDate.getMonth() + 
+                            sysDate.getDate() +
+                            sysDate.getDay() +
+                            sysDate.getHours() +
+                            sysDate.getMinutes() +
+                            sysDate.getSeconds() +
+                            sysDate.getMilliseconds();
+
+                return sysString;
+              };
+
+              async function startYouTubePlayer(video_url, isRandomTime) {
+                
+                var videoUrlWithAutoplay;
+                // var startTime = Math.floor(Math.random() * 60) + 1;
+                var startTime = 1;
+                
+                if (isRandomTime) {
+                  videoUrlWithAutoplay = video_url + "?start=" + startTime + "&end=" + (Math.floor(startTime) + Math.floor(run_time)) + ";rel=0&autoplay=1&mute=1&sid=" + getDateSystemId();
+                  // videoUrlWithAutoplay = video_url + "?start=" + startTime + "&end=" + (Math.floor(startTime) + Math.floor(run_time)) + ";rel=0&autoplay=1&mute=1";
+                } else {
+                  videoUrlWithAutoplay = video_url + "?autoplay=1&mute=1&sid=" + getDateSystemId();
+                }
+
+                console.log("URL: " + videoUrlWithAutoplay);
+
+                if (video_url && !iframeHolder) {
+                    iframeHolder = document.createElement("iframe");
+                    iframeHolder.setAttribute("id", "vidPlayer");
+                    iframeHolder.setAttribute("name", "vidPlayer");
+                    iframeHolder.setAttribute("width", "560");
+                    iframeHolder.setAttribute("height", "315");
+                    iframeHolder.setAttribute("allow", "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
+                    
+                    document.body.appendChild(iframeHolder);
+                    var el = document.getElementById("vidPlaying");
+                    
+                    el.parentNode.insertBefore(iframeHolder, el);
+                    // assign url
+                    iframeHolder.setAttribute("src", videoUrlWithAutoplay);
+                }
+                else {
+                  function closeIFrame(){
+                    $('#vidPlayer').remove();
+                  }  
+                  iframeHolder.src = '';
+                  iframeHolder.contentWindow.location.href = '';
+                  iframeHolder.contentWindow.location.href = videoUrlWithAutoplay;
+                  iframeHolder.src = videoUrlWithAutoplay;
+                  //document.getElementById('vidPlayer').contentWindow.location.reload(true);
+                  //var tmp_src = iframeHolder.src; 
+                  //iframeHolder.src = '';
+                  //iframeHolder.src = tmp_src;                  
+                }
+                
+              };
+              
+              async function stopYouTubePlayer() {
+
+                //var iframe = document.getElementById("vidPlayer1");
+                //document.body.removeChild(iframe); 
+                
+                var el = document.getElementById("vidPlaying");
+                var iframe = document.getElementById("vidPlayer" + iframeId);
+                el.parentNode.removeChild(iframe);
+            
+              };
+
+              function reload(theElement){
+                if (theElement) {
+                  var container = document.getElementById(theElement);
+                  var content = container.innerHTML;
+                  container.innerHTML = content; 
+                  
+                 //this line is to watch the result in console , you can remove it later	
+                  console.log("Refreshed"); 
+                }
+              };
+          </script>
+       
+      </td>
+    </tr>
+    
+    <tr>
+      <td>
+        <center><h3 id="videoTitle"></h3></center>
+        <center><p id="waitTime"></p></center>
+        <span id="waitWork" hidden>
+            <center>
+              <IMG SRC="//feuersoft.com/image/busy.gif" HEIGHT=100 WIDTH=100>
+            </center>  
+          </div>
+        </span>
+        <div id="vidPlaying"></div>
+      </td>
+    </tr>
+  </table>
+  <!-- Note: the H3 title needs to be within the div because the verticle ad causes and issue. -->
+
+  <div id="fullBrowserContent2" hidden>
+    <TABLE class="center">
+      <tr>
+        <td>
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <ins class="adsbygoogle"
+                style="display:inline-block;width:230px;height:120px"
+                data-ad-client="ca-pub-3352789819896964"
+                data-ad-slot="9746586835"></ins>
+          <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </td>
+      </tr>
+    </TABLE>   
+  </div>
+
+  <div hidden>
+    <a>
+      <img src="//counter.digits.net/?counter={18ee4ae3-87a0-2944-d5f2-5b11d020cf79}&template=simple" border="0" />
+    </a>
+  </div>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-96531677-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-96531677-1');
+  </script>
+</BODY>
+</HTML>
