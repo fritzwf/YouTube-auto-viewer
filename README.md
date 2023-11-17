@@ -1,2 +1,2 @@
 # HTML
-Automaticly view YouTube vidoes.
+Automatically view YouTube vidoes.
